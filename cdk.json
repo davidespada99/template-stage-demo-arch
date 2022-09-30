@@ -1,0 +1,76 @@
+{
+  "app": "npx ts-node --prefer-ts-exts bin/demo_arch_1.ts",
+  "watch": {
+    "include": [
+      "**"
+    ],
+    "exclude": [
+      "README.md",
+      "cdk*.json",
+      "**/*.d.ts",
+      "**/*.js",
+      "tsconfig.json",
+      "package*.json",
+      "yarn.lock",
+      "node_modules",
+      "test"
+    ]
+  },
+  "context": {
+    "dev": {
+      "account": "663614489119",
+      "region": "eu-central-1",
+      "project": "demo-arch-1",
+      "environment": "dev",
+      "stacks": {
+        "network": {
+          "vpcCidr": "10.0.0.0/20",
+          "createNetwork": true,
+          "publicSubnets": [
+            {
+              "zone": "a",
+              "cidr": "10.0.0.0/22"
+            },
+            {
+              "zone": "b",
+              "cidr": "10.0.4.0/22"
+            }
+          ],
+          "privateSubnets": [
+            {
+              "zone": "a",
+              "cidr": "10.0.8.0/22"
+            },
+            {
+              "zone": "b",
+              "cidr": "10.0.12.0/22"
+            }
+          ]
+
+        }
+      }
+    },
+
+    "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,
+    "@aws-cdk/core:stackRelativeExports": true,
+    "@aws-cdk/aws-rds:lowercaseDbIdentifier": true,
+    "@aws-cdk/aws-lambda:recognizeVersionProps": true,
+    "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
+    "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": true,
+    "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": true,
+    "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": true,
+    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/aws-iam:minimizePolicies": true,
+    "@aws-cdk/aws-ecs:arnFormatIncludesClusterName": true,
+    "@aws-cdk/core:validateSnapshotRemovalPolicy": true,
+    "@aws-cdk/aws-codepipeline:crossAccountKeyAliasStackSafeResourceName": true,
+    "@aws-cdk/aws-s3:createDefaultLoggingPolicy": true,
+    "@aws-cdk/aws-sns-subscriptions:restrictSqsDescryption": true,
+    "@aws-cdk/aws-apigateway:disableCloudWatchRole": true,
+    "@aws-cdk/core:enablePartitionLiterals": true,
+    "@aws-cdk/core:target-partitions": [
+      "aws",
+      "aws-cn"
+    ]
+  }
+}
