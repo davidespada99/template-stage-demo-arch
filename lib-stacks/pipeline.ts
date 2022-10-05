@@ -4,7 +4,7 @@ import { Repository } from "aws-cdk-lib/aws-codecommit";
 import { ServerApplication, ServerDeploymentConfig, ServerDeploymentGroup } from "aws-cdk-lib/aws-codedeploy";
 import { Artifact, Pipeline } from "aws-cdk-lib/aws-codepipeline";
 import { CodeBuildAction, CodeCommitSourceAction, CodeDeployServerDeployAction } from "aws-cdk-lib/aws-codepipeline-actions";
-import { Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import { Effect, Policy, PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
 import { BuildConfig } from "../common_config/build_config";
@@ -36,6 +36,7 @@ export class PipelineStack extends Stack {
                 role: codeBuildrole
             });
 
+            //CodeCommit
             const sourceOutput = new Artifact();
             const sourceAction = new CodeCommitSourceAction({
                 actionName: "Codebuild",
@@ -44,6 +45,7 @@ export class PipelineStack extends Stack {
                 output: sourceOutput
             });
 
+            //CodeBuild
             const buildOutput = new Artifact();
             const buildAction = new CodeBuildAction({
                 actionName: "CodeBuild",
@@ -53,6 +55,7 @@ export class PipelineStack extends Stack {
                 executeBatchBuild: false,
             });
 
+            //CodeDeploy
             const application = new ServerApplication(this, "CodeDeploy-ServerApplication", {
                 applicationName: `${prefix}-CodeDeploy-application`
             });
@@ -64,15 +67,30 @@ export class PipelineStack extends Stack {
                 deploymentConfig: ServerDeploymentConfig.ONE_AT_A_TIME
             });
 
+
+            const artifactBucket = new Bucket(this, 'PipelineS3Bucket,', {
+                bucketName: `${prefix}-my-bucket`,
+            });
+
+            const deployRole = new Role(this, "DeployRole", {
+                assumedBy: new ServicePrincipal("s3.amazonaws.com")
+            });
+
+            deployRole.addToPolicy(
+                new PolicyStatement({
+                effect: Effect.ALLOW,
+                actions: ['s3:GetObject'],
+                resources: [`${artifactBucket.bucketArn}/*`],
+            })
+            );
+
             const deployAction = new CodeDeployServerDeployAction({
                 actionName: "CodeDeploy",
                 input: buildOutput,
-                deploymentGroup
-            });
+                deploymentGroup,
+                role: deployRole
+            })
 
-            const artifactBucket = new Bucket(this, 'PipelineS3Bucket,', {
-                bucketName:  `${prefix}-my-bucket`,
-            });
 
             const pipeline = new Pipeline(this, "myPipeline", {
                 pipelineName: `${prefix}-pipeline`,

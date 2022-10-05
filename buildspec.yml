@@ -1,0 +1,13 @@
+version: 0.2 
+phases:
+  pre_build: 
+    commands: 
+      - echo no pre-build actions will be executed
+  build: 
+    commands: 
+      - echo Entered the build phase... 
+      - echo This is some Text > FileName.txt
+  post_build: 
+    commands: 
+      - echo Entered the post_build phase... 
+      - echo Everything done.
