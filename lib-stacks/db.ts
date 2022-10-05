@@ -10,6 +10,7 @@ export class DbStack extends Stack {
     constructor(scope: Construct, id: string, buildConfig: BuildConfig, asgProps: AsgStack, props?: StackProps) {
         super(scope, id, props);
 
+        const prefix = `${buildConfig.environment}-${buildConfig.project}`;
         //VPC from Lookup
         const myVpc = Vpc.fromLookup(this, 'TemplateVPC', {
             vpcId: buildConfig.stacks.network.vpcId,

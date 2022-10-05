@@ -1,18 +1,17 @@
-import { Duration, Stack, StackProps } from "aws-cdk-lib";
-import { HealthCheck } from "aws-cdk-lib/aws-appmesh";
+import { Stack, StackProps } from "aws-cdk-lib";
 import { AutoScalingGroup } from "aws-cdk-lib/aws-autoscaling";
 import { InstanceType, MachineImage, Peer, Port, SecurityGroup, UserData, Vpc } from "aws-cdk-lib/aws-ec2";
-import { ApplicationLoadBalancer, TargetType } from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import { ApplicationLoadBalancer } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Construct } from "constructs";
 import { BuildConfig } from "../common_config/build_config";
 
 export class AsgStack extends Stack {
     public secGroupforASG: SecurityGroup[] = [];
+    public autoScalingGroups: AutoScalingGroup[] = [];
 
     constructor(scope: Construct, id: string, buildConfig: BuildConfig, props?: StackProps) {
         super(scope, id, props);
         const ASGConfig = buildConfig.stacks.autoScalingGroup;
-
 
         //VPC from Lookup
         const myVpc = Vpc.fromLookup(this, 'TemplateVPC', {
@@ -36,8 +35,6 @@ export class AsgStack extends Stack {
             vpc: myVpc
         });
         secGroupALB.addIngressRule(Peer.anyIpv4(), Port.tcp(buildConfig.stacks.appLoadBalancer.listenerPort));
-
-
 
         buildConfig.stacks.autoScalingGroup.forEach((ASGConfig, index) => {
 
@@ -75,7 +72,7 @@ export class AsgStack extends Stack {
 
             //AUTO SCALING GROUP
             const asgGroup = new AutoScalingGroup(this, 'TemplateASG', {
-                autoScalingGroupName: `ASG-${index}-${buildConfig.project}`,
+                autoScalingGroupName: `ASG-${buildConfig.project}`,
                 vpc: myVpc,
                 instanceType: new InstanceType(`${ASGConfig.istanceType.class}.${ASGConfig.istanceType.size}`),
                 machineImage: ImageAmi,
@@ -93,7 +90,6 @@ export class AsgStack extends Stack {
                 });
             }
 
-
             //Target Group for ASG to attach to the ALB listener
             if (ASGConfig.targetGroup.attachToALB) {
                 listener.addTargets('TemplateTGforASG', {
@@ -106,8 +102,8 @@ export class AsgStack extends Stack {
                     }
                 });
             }
+
+            this.autoScalingGroups.push(asgGroup);
         });
-
     }
-
 }
