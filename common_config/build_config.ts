@@ -13,12 +13,15 @@ export interface BuildStacks {
 	dataBase: BuildDB[];
 }
 
-export interface BuildNetworkStack { 		//network
-	vpcId: string;
-	vpcCidr: string;
-	createNetwork?: boolean;
-	publicSubnets?: SubnetsConfig[];
-	privateSubnets?: SubnetsConfig[];
+export interface BuildNetworkStack {
+    vpcCidr: string;
+    privateSubnets: SubnetConfig[];
+    publicSubnets: SubnetConfig[];
+}
+export interface SubnetConfig {
+    zone: string;
+    cidr: string;
+    id: string;
 }
 
 export interface BuildASGStack {			//ASG

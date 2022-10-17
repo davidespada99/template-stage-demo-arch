@@ -19,39 +19,25 @@
   "context": {
     "dev": {
       "account": "663614489119",
-      "region": "eu-central-1",
-      "project": "template-arch-1",
+      "region": "eu-west-1",
+      "project": "arch-1",
       "environment": "dev",
       "stacks": {
         "network": {
-          "VpcId": "vpc-0b603e307bb8c3e89",
           "vpcCidr": "10.0.0.0/20",
-          "createNetwork": true,
-          "publicSubnets": [
-            {
-              "zone": "a",
-              "cidr": "10.0.0.0/22"
-            },
-            {
-              "zone": "b",
-              "cidr": "10.0.4.0/22"
-            }
-          ],
           "privateSubnets": [
-            {
-              "zone": "a",
-              "cidr": "10.0.8.0/22"
-            },
-            {
-              "zone": "b",
-              "cidr": "10.0.12.0/22"
-            }
+              { "zone": "a", "cidr": "10.0.0.0/22" },
+              { "zone": "b", "cidr": "10.0.4.0/22" }
+          ],
+          "publicSubnets": [
+              { "zone": "a", "cidr": "10.0.8.0/22" },
+              { "zone": "b", "cidr": "10.0.12.0/22" }
           ]
-        },
+      },
         "autoScalingGroup": [
           {
-            "os": "windows",
-            "ami": "ami-00f0f1e05a950042b",
+            "os": "linux",
+            "ami": "ami-0ea0f26a6d50850c5",
             "userData": "",
             "istanceType": {
               "class": "t2",

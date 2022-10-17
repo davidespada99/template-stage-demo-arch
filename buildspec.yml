@@ -1,4 +1,5 @@
 version: 0.2 
+os: linux
 phases:
   pre_build: 
     commands: 
@@ -6,7 +7,7 @@ phases:
   build: 
     commands: 
       - echo Entered the build phase... 
-      - echo This is some Text > FileName.txt
+      - echo "This is some Text" > FileName.txt
   post_build: 
     commands: 
       - echo Entered the post_build phase... 

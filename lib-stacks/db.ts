@@ -5,18 +5,14 @@ import { DH_UNABLE_TO_CHECK_GENERATOR } from "constants";
 import { Construct } from "constructs";
 import { BuildConfig } from "../common_config/build_config";
 import { AsgStack } from "./asg";
+import { NetworkImportStack } from "./network-import";
 
 export class DbStack extends Stack {
-    constructor(scope: Construct, id: string, buildConfig: BuildConfig, asgProps: AsgStack, props?: StackProps) {
+    constructor(scope: Construct, id: string, buildConfig: BuildConfig, networkProps: NetworkImportStack, asgProps: AsgStack, props?: StackProps) {
         super(scope, id, props);
 
         const prefix = `${buildConfig.environment}-${buildConfig.project}`;
-        //VPC from Lookup
-        const myVpc = Vpc.fromLookup(this, 'TemplateVPC', {
-            vpcId: buildConfig.stacks.network.vpcId,
-            isDefault: false
-        });
-
+       
 
         buildConfig.stacks.dataBase.forEach((DBConfig, index) => {
             //DATABASE ENGINE 
@@ -46,14 +42,14 @@ export class DbStack extends Stack {
              //SECURITY GROUP for RDS
             asgProps.secGroupforASG.forEach((secGroup) => {
                 const securityGroupforRDS = new SecurityGroup(this, "SecuriyGroup-for-db", {
-                    vpc: myVpc
+                    vpc: networkProps.vpc
                 });
                 securityGroupforRDS.addIngressRule(Peer.securityGroupId(secGroup.securityGroupId), Port.tcp(DBConfig.securityGroup.numberPort));
             });
         
 
             const db = new DatabaseInstance(this, 'DatabaseTemplate', {
-                vpc: myVpc,
+                vpc: networkProps.vpc,
                 engine: dbEngine,
                 instanceType: new InstanceType(`${DBConfig.istanceDBType.class}.${DBConfig.istanceDBType.size}`),
                 allocatedStorage: DBConfig.allocatedStorage,

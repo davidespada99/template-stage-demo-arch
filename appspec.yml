@@ -1,0 +1,4 @@
+version: 0.0
+os: linux
+//da inserire nella repo assieme al buildspec.yml
+//necessario per codedeploy

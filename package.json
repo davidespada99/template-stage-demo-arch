@@ -1,8 +1,8 @@
 {
-  "name": "demo_arch_1",
+  "name": "template_arch_1",
   "version": "0.1.0",
   "bin": {
-    "demo_arch_1": "bin/demo_arch_1.js"
+    "demo_arch_1": "bin/template_arch_1.js"
   },
   "scripts": {
     "build": "tsc",
@@ -10,11 +10,11 @@
     "test": "jest",
     "cdk": "cdk",
 
-    "cdk-deploy-dev-all": "cdk deploy \"*\" -c config=dev  --require-approval=never",
-		"cdk-deploy-stack": "cdk deploy $npm_config_stack -c config=dev --profile fpt-datalake --require-approval=never",
-		"cdk-diff-dev":"cdk diff -c config=dev",
-    "cdk-destroy-stack-dev": "cdk destroy $npm_config_stack -c config=dev --profile fpt-datalake",
-		"cdk-destroy-dev-all": "cdk destroy \"*\" -c config=dev --require-approval=never"
+    "cdk-deploy-dev-all": "cdk context --clear && cdk deploy \"*\" -c config=dev  --require-approval=never",
+		"cdk-deploy-stack": "cdk context --clear && cdk deploy $npm_config_stack -c config=dev --require-approval=never",
+		"cdk-diff-dev":"cdk context --clear && cdk diff -c config=dev",
+    "cdk-destroy-stack-dev": "cdk context --clear && cdk destroy $npm_config_stack -c config=dev ",
+		"cdk-destroy-dev-all": "cdk context --clear && cdk destroy \"*\" -c config=dev --require-approval=never"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",
